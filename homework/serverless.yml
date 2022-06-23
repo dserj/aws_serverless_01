@@ -1,0 +1,50 @@
+service: resizer
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  profile: lambda-upload # Use your profile name from ~/.aws/credentials
+  runtime: nodejs14.x
+  region: us-east-1
+
+custom:
+  upload-bucket: sls-upload-1 # Put your bucket's name here, the bucket will be created automatically
+  result-bucket: sls-resized-1 # Create this bucket beforehand and put bucket's name here
+  upload-bucket-arn: arn:aws:s3:::${self:custom.upload-bucket}
+  result-bucket-arn: arn:aws:s3:::${self:custom.result-bucket}
+
+package:
+  exclude:
+    - package-lock.json
+    - package.json
+    - README.md
+
+functions:
+  image-resizer:
+    handler: index.handler
+    timeout: 5
+    memorySize: 128
+    package:
+      individually: true
+    environment:
+      RESULT_BUCKET: ${self:custom.result-bucket}
+      RESIZE_WIDTH: 200
+    events:
+      - s3:
+          bucket: ${self:custom.upload-bucket}
+          event: s3:ObjectCreated:*
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - 's3:Get*'
+        Resource:
+          - ${self:custom.upload-bucket-arn}/*
+      - Effect: 'Allow'
+        Action:
+          - 's3:Put*'
+        Resource:
+          - ${self:custom.result-bucket-arn}
+          - ${self:custom.result-bucket-arn}/*
+
+plugins:
+  - serverless-iam-roles-per-function
