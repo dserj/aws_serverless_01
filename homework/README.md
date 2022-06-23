@@ -1,9 +1,11 @@
-# Steps for homework
+# Steps for the homework
 - Install NodeJs version 14
 - Install Serverless framework: https://www.serverless.com/framework/docs/getting-started (Ignore all the possible outputs)
 - Create an IAM user in AWS console and grant Administrator access (!!! IMPORTANT !!! This is a bad practice and made so just to keep the example simple.)
 - Configure an AWS profile in ~/.aws/credentials
 - Head to /homework folder
+- Create a "resize-bucket" in S3
+- Update serveless.yml with your configuration
 - Run npm i
 - Run sls deploy
 
