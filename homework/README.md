@@ -20,3 +20,4 @@
 
 # Clean up
 - Run sls remove
+- Delete the IAM user created for this lab
